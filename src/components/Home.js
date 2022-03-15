@@ -1,4 +1,4 @@
-import flowers from '../data';
+import flowers from '../data_access_layer/data';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import CardGroup from 'react-bootstrap/CardGroup';
