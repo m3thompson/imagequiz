@@ -53,4 +53,4 @@ const Login = (props) => {
     );
 }
 
-export default Register;
+export default Login;
