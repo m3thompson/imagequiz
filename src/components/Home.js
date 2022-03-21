@@ -1,29 +1,43 @@
-import flowers from '../data_access_layer/data';
+import dataService from '../data_access_layer/local_temporarily_storage';
+import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import CardGroup from 'react-bootstrap/CardGroup';
-import Card from 'react-bootstrap/Card';
-
+import Card from 'react-bootstrap/Container';
+import { useNavigate } from 'react-router-dom';
 
 const Home = () => {
-    const flowerInfo = flowers.map((f) => {
-        return <Col>
-            <Card>
-                <Card.Img variant="top" src={f.picture} />
-                <Card.Body>
-                    <Card.Title>{f.name}</Card.Title>
-                </Card.Body>
-            </Card>
-        </Col>
-    })
+    const navigate = useNavigate();
+
+    let takeTheQuiz = (flowerName) => {
+        navigate('/quiz/' + flowerName);
+    }
+
     return (
-        <Row xs={1} md={4} className="g-4">
-            {flowerInfo}
-        </Row>
-    );
+        <Container>
+            <Row xs={1} md={3} className="g-4 text-center">
+                {dataService.getFlowers().map((x, index) => (
+                    <Col key={index}>
+                        <Card className="h-100" onClick={() => takeTheQuiz(x.name)}>
+                            <Card.Img variant="top" src={x.picture} />
+                            <Card.Body>
+                                <Card.Title>{x.name}</Card.Title>
+                                <Card.Text>
+
+                                </Card.Text>
+                            </Card.Body>
+                        </Card>
+                    </Col>
+                ))}
+            </Row>
+        </Container>
+
+    )
 }
 
 export default Home;
+
+
+
 
 /*
 import flowers from '../data_access_layer/data';
