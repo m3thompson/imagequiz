@@ -1,10 +1,43 @@
-import dataService from '../data_access_layer/local_temporarily_storage';
+import flowers from '../data_access_layer/data';
+//import dataService from '../data_access_layer/local_temporarily_storage';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Card from 'react-bootstrap/Card';
-import { useNavigate } from 'react-router-dom';
+//import { useNavigate } from 'react-router-dom';
 
+import React from "react";
+import quizzes from '../temp_data_repository/data';
+import { Link } from "react-router-dom";
+//import { useState } from "react";
+
+function Home() {
+    console.log(quizzes);
+    var i = 0;
+    return (
+      <div className="bg-dark">
+        <Container fluid="md">
+          <Row>
+            {flowers.map(
+              (flower, i) => (
+                <Col key={flower.name}>
+                  <Link to={`${i}`}>
+                    <img src={flower.picture} alt={flower.name} />{" "}
+                  </Link>
+                  <div style={{ color: "white" }}>{flower.name}</div>
+                </Col>
+              ),
+              (i = i + 1)
+            )}
+          </Row>
+        </Container>
+      </div>
+    );
+  }
+  
+  export default Home;
+
+/*
 const Home = () => {
     const navigate = useNavigate();
 
@@ -31,22 +64,6 @@ const Home = () => {
             </Row>
         </Container>
     )
-}
-
-export default Home;
-
-
-
-
-/*
-import flowers from '../data_access_layer/data';
-
-const Home = () => {
-    return (
-        <div>
-            Hello from the home page!
-        </div>
-    );
 }
 
 export default Home;
