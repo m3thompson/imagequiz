@@ -2,7 +2,7 @@ import dataService from '../data_access_layer/local_temporarily_storage';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import Card from 'react-bootstrap/Container';
+import Card from 'react-bootstrap/Card';
 import { useNavigate } from 'react-router-dom';
 
 const Home = () => {
@@ -12,7 +12,7 @@ const Home = () => {
         navigate('/quiz/' + flowerName);
     }
 
-    return (
+    return ( 
         <Container>
             <Row xs={1} md={3} className="g-4 text-center">
                 {dataService.getFlowers().map((x, index) => (
@@ -30,7 +30,6 @@ const Home = () => {
                 ))}
             </Row>
         </Container>
-
     )
 }
 
