@@ -57,61 +57,107 @@ export default Quiz;
 */
 
 
-import React, { useState, useEffect } from "react";
-import { Link, useParams } from "react-router-dom";
-import "bootstrap/dist/css/bootstrap.min.css";
-import quizzes from "../temp_data_repository/data";
-import { Container, Row, Col, Button } from "react-bootstrap";
-function Quizz() {
-  const { i } = useParams();
-  const id = parseInt(i, 10);
-  const name = quizzes[id].name;
-  const questions = quizzes[id].questions;
-  console.log(questions[0]);
-  const [score, setScore] = useState(0);
-  const [n, setN] = useState(0);
-  const [picture, setPicture] = useState(questions[n].picture);
-  const [choices, setChoices] = useState(questions[n].choices);
-  const [answer, setAnswer] = useState(questions[n].answer);
-  useEffect(() => {
-    setPicture(questions[n].picture);
-    setChoices(questions[n].choices);
-    setAnswer(questions[n].answer);
-  }, [id, n]);
+import { useLocation, useParams, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import data_service from "../data_access_layer/data_service";
+import Container from 'react-bootstrap/Container';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
+import Card from 'react-bootstrap/Card';
+import Spinner from 'react-bootstrap/Spinner';
+import ListGroup from 'react-bootstrap/ListGroup';
+import Button from 'react-bootstrap/Button';
 
-  function handleClick(i) {
-    if (n == 5) {
-      return;
-    }
-    if (i === answer) {
-      setScore(score + 1);
-      setN(n + 1);
-    } else {
-      setN(n + 1);
-    }
-  }
-  return (
-    <>
-      <Container>
-        <Row>
-          <Col>
-            <div>Question {n + 1} / 6</div>
-            <div>Your score is: {score} / 6</div>
+const Quiz = () => {
+    const navigate = useNavigate();
+    const [currentQuestionNumber, setCurrentQuestionNumber] = useState(0);
+    const [score, setScore] = useState(0);
+    const [quiz, setQuiz] = useState(undefined);
+    const { id } = useParams();
+    const [disabled, setDisabled] = useState(false);
+    const [gameOver, setGameOver] = useState(false);
 
-            <img src={`${picture}`} />
-          </Col>
-          <Col>
-            What is this flower?
-            <br />
-            {choices.map((i) => (
-              <div>
-                <Button onClick={() => handleClick(i)}>{i}</Button>{" "}
-              </div>
-            ))}
-          </Col>
-        </Row>
-      </Container>
-    </>
-  );
+    useEffect(() => {
+        if (!quiz) {
+            let x = data_service.getQuiz(id);
+            setQuiz(x);
+        }
+    });
+
+    let nextQuizQuestion = () => {
+        if (currentQuestionNumber === quiz.questions.length - 1) {
+            setGameOver(true);
+        } else {
+            setCurrentQuestionNumber(currentQuestionNumber + 1);
+            setDisabled(false);
+        }
+
+    }
+
+    let checkAnswer = (choice, event) => {
+        // prevents the choice from being clicked again after the correct answer is picked
+        if (disabled) {
+            return;
+        }
+
+        if (choice === quiz.questions[currentQuestionNumber].answer) {
+            let icon = document.createElement('i');
+            icon.setAttribute("class", "bi-check");
+            icon.setAttribute("style", "font-size: 2rem; color: green");
+            event.target.appendChild(icon);
+            setScore(score + 1);
+        } else {
+            let icon = document.createElement('i');
+            icon.setAttribute("class", "bi-x");
+            icon.setAttribute("style", "font-size: 2rem; color: red");
+            event.target.appendChild(icon);
+        }
+
+        setDisabled(true);
+        setTimeout(() => {
+            nextQuizQuestion();
+        }, 1500)
+    }
+
+    let startOver = () => {
+        setCurrentQuestionNumber(0);
+        setScore(0);
+        setDisabled(false);
+        setGameOver(false);
+    }
+
+    return (
+        <Container>
+            {quiz ?
+                <Card className="text-center" style={{ "width": "40rem" }}>
+                    <Card.Header as="h5" >{currentQuestionNumber + 1}/6 <span className="d-flex justify-content-end">Your Score: {score}/6</span> </Card.Header>
+                    <Card.Img variant="top" src={quiz.questions[currentQuestionNumber].picture} />
+                    <Card.Body>
+                        <Card.Title>{quiz.name} Quiz</Card.Title>
+                        <Card.Subtitle></Card.Subtitle>
+                        <Card.Text>
+                            {gameOver ?
+                                <>
+                                    <div>Final Score: {score}/6</div>
+                                    <Button variant="primary" onClick={startOver}>Try Again</Button>
+                                    <Button variant="primary" onClick={() => navigate('/')}>Return to quizzes</Button>
+                                </>
+                                : <p>Select an answer</p>}
+                        </Card.Text>
+                    </Card.Body>
+                    <ListGroup>
+                        {quiz.questions[currentQuestionNumber].choices.map(c => (
+                            <ListGroup.Item onClick={(e) => checkAnswer(c, e)}>{c}</ListGroup.Item>
+                        ))}
+                    </ListGroup>
+                </Card>
+                :
+                <Spinner animation="border" role="status">
+                    <span className="visually-hidden">Loading...</span>
+                </Spinner>
+            }
+        </Container>
+    );
 }
-export default Quizz;
+
+export default Quiz;
