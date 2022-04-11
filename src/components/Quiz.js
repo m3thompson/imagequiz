@@ -79,7 +79,7 @@ const Quiz = () => {
 
     useEffect(() => {
         if (!quiz) {
-            let x = data_service.getQuiz(id);
+            let x = dataService.getQuiz(id);
             setQuiz(x);
         }
     });
