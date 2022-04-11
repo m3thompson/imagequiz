@@ -60,7 +60,7 @@ export default Quiz;
 import React, { useState, useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
-import quizzes from "./data";
+import quizzes from "../temp_data_repository/data";
 import { Container, Row, Col, Button } from "react-bootstrap";
 function Quizz() {
   const { i } = useParams();
