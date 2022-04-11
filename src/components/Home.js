@@ -1,4 +1,4 @@
-import flowers from '../data_access_layer/data';
+import flowers from '../temp_data_repository/flowers';
 //import dataService from '../data_access_layer/local_temporarily_storage';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
