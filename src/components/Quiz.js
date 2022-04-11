@@ -59,7 +59,7 @@ export default Quiz;
 
 import { useLocation, useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import data_service from "../data_access_layer/data_service";
+import dataService from "../data_access_layer/local_temporarily_storage";
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
