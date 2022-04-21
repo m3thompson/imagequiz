@@ -1,8 +1,10 @@
-import { useState } from 'react';
+import { useState  } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Form from 'react-bootstrap/Form'
-import Button from 'react-bootstrap/Button'
-import dataService from '../data_access_layer/local_temporarily_storage';
+import Form from 'react-bootstrap/Form';
+import Button from 'react-bootstrap/Button';
+
+import apiAccess from '../communication/APIAccess';
+
 
 const Register = () => {
     const [name, setName] = useState('');
@@ -23,8 +25,15 @@ const Register = () => {
     }
 
     let onSubmitHandler = (e) => {
-        dataService.customers.push({name: name, email: email, password: password});
-        navigate('/login');
+        e.preventDefault();
+        apiAccess.addCustomer(name, email, password)
+        .then(x => navigate('/login'))
+        .catch(e => 
+            {
+                console.log(e);
+                alert('Registeration failed.');
+            }
+            );        
     }
 
     return (
@@ -32,12 +41,12 @@ const Register = () => {
 
             <Form.Group className="mb-3" controlId="formBasicName">
                 <Form.Label>Name</Form.Label>
-                <Form.Control type="text" placeholder="Enter name" value={name} onChange={onNameChanged}/>
+                <Form.Control type="text" placeholder="Enter name" value={name} onChange={onNameChanged}/>              
             </Form.Group>
 
             <Form.Group className="mb-3" controlId="formBasicEmail">
                 <Form.Label>Email address</Form.Label>
-                <Form.Control type="email" placeholder="Enter email" value={email} onChange={onEmailChanged} />
+                <Form.Control type="email" placeholder="Enter email" value={email} onChange={onEmailChanged}/>
                 <Form.Text className="text-muted">
                     We'll never share your email with anyone else.
                 </Form.Text>
@@ -45,7 +54,7 @@ const Register = () => {
 
             <Form.Group className="mb-3" controlId="formBasicPassword">
                 <Form.Label>Password</Form.Label>
-                <Form.Control type="password" placeholder="Password" value={password} onChange={onPasswordChanged} />
+                <Form.Control type="password" placeholder="Password" value={password} onChange={onPasswordChanged}/>
             </Form.Group>
 
             <Button variant="primary" type="submit">
