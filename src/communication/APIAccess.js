@@ -1,4 +1,5 @@
-let backendAddress = 'https://m3thompson-imagequiz-api.herokuapp.com';
+import congifuration from '../configuration';
+let backendAddress = congifuration.backendAddress;
 
 let apiAccess = {
     addCustomer: (name, email, password) => {
@@ -63,6 +64,22 @@ let apiAccess = {
     },
     getQuiz: (name) => {
         return fetch(`${backendAddress}/quiz/${name}`, {
+            method: 'Get',
+            credentials: "include",
+            headers: {
+                'Content-Type': 'application/json',
+                "Access-Control-Allow-Credentials": true
+            }
+        })
+            .then(x => x.json())
+            .then(x => {
+                console.log(x);
+                return x.result;
+            });
+    },
+
+    isLoggedIn: () => {
+        return fetch(`${backendAddress}/isloggedin`, {
             method: 'Get',
             credentials: "include",
             headers: {
