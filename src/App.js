@@ -2,7 +2,7 @@
 // import logo from './logo.svg';
 // import './App.css';
 
-import { HashRouter, Routes, Route } from 'react-router-dom'
+import { HashRouter, Routes, Route, useParams } from 'react-router-dom'
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
@@ -16,10 +16,16 @@ import Quiz from './components/Quiz';
 import { useState } from 'react';
 
 function App() {
-  const [customer, setCustomer] = useState(undefined);
+  const [customer, setCustomer] = useState(localStorage.getItem('customer'));
 
   let customerLoggedInHandler = (customerEmail) => {
+    localStorage.setItem('customer', customerEmail);
     setCustomer(customerEmail);
+  }
+
+  let customerLoggedOutHandler = () => {
+    localStorage.removeItem('customer');
+    setCustomer(undefined);
   }
 
   return (
@@ -33,7 +39,7 @@ function App() {
 
         <Row>
           <Col>
-            <Menu customer={customer} />
+            <Menu customer={customer} customerLoggedOut={customerLoggedOutHandler} />
           </Col>
         </Row>
 
@@ -43,10 +49,18 @@ function App() {
           <Route exact path='/register' element={<Register />}>
           </Route>
 
+          <Route exact path='/login/:from?' element={<Login customerLoggedIn={customerLoggedInHandler} />}>
+
+          </Route>
+
           <Route exact path='/login' element={<Login customerLoggedIn={customerLoggedInHandler} />}>
 
           </Route>
-          <Route exact path='/quiz/:id' element={<Quiz />}>
+
+          <Route exact path='/quiz/:id' element={
+            <ProtectedRoute customer={customer}><Quiz /></ProtectedRoute>
+
+          }>
 
           </Route>
           <Route exact path='/' element={<Home />}>
@@ -63,6 +77,16 @@ function App() {
       </Container>
     </HashRouter>
   );
+}
+
+const ProtectedRoute = ({ customer, children }) => {
+  const { id } = useParams();
+  
+  if (customer) {
+    return children;
+  } else {
+    return <Navigate to={`/login/${id}`} />;
+  }
 }
 
 export default App;
