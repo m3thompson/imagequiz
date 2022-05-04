@@ -50,7 +50,7 @@ function App() {
           <Route exact path='/register' element={<Register />}>
           </Route>
 
-          <Route exact path='/login/:from?' element={<Login customerLoggedIn={customerLoggedInHandler} />}>
+          <Route exact path='/login/:from' element={<Login customerLoggedIn={customerLoggedInHandler} />}>
 
           </Route>
 
