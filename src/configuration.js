@@ -1,6 +1,6 @@
 
 let congifuration = {
-    backendAddress: 'http://localhost:4002'
+    backendAddress: 'https://m3thompson-imagequiz-api.herokuapp.com'
 };
 
 export default congifuration;
